@@ -1,5 +1,9 @@
 Changelog
 =========
+- added spec config include_read_only_properties
+- added spec config expand_missing_properties
+- added spec config pass_property_on_missing_spec
+
 4.2.2 (2016-04-01)
 ------------------
 - Fix marshalling of an optional array query parameter when not passed in the

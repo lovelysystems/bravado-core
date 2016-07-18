@@ -3,6 +3,15 @@ from collections import Mapping
 from bravado_core.exception import SwaggerMappingError
 
 
+class SwaggerReadOnly(Exception):
+    """Raised if a property is read only and include_read_only_properties is
+    set to False in the swagger spec configuration
+
+    This is an internal exception and is catched in the unmarshal_object
+    implementation.
+    """
+
+
 # 'object' and 'array' are omitted since this should really be read as
 # "Swagger types that map to python primitives"
 SWAGGER_PRIMITIVES = (
@@ -24,6 +33,16 @@ def get_default(swagger_spec, schema_object_spec):
 
 def is_required(swagger_spec, schema_object_spec):
     return swagger_spec.deref(schema_object_spec).get('required', False)
+
+
+def is_read_only(swagger_spec, schema_object_spec):
+    return swagger_spec.deref(schema_object_spec).get('readOnly', False)
+
+
+def raise_if_read_only(swagger_spec, schema_object_spec):
+    if not swagger_spec.config.get('include_read_only_properties', True) \
+       and is_read_only(swagger_spec, schema_object_spec):
+        raise SwaggerReadOnly()
 
 
 def has_format(swagger_spec, schema_object_spec):

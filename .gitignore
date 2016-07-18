@@ -2,6 +2,7 @@
 *.egg
 *.pyc
 .coverage
+.cache
 cover/
 dist/
 nosetests.xml

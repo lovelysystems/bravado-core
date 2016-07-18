@@ -28,6 +28,9 @@ def unmarshal_schema_object(swagger_spec, schema_object_spec, value):
     """
     deref = swagger_spec.deref
     schema_object_spec = deref(schema_object_spec)
+
+    schema.raise_if_read_only(swagger_spec, schema_object_spec)
+
     obj_type = schema_object_spec['type']
 
     if obj_type in SWAGGER_PRIMITIVES:
@@ -111,21 +114,31 @@ def unmarshal_object(swagger_spec, object_spec, object_value):
         raise SwaggerMappingError('Expected dict like type for {0}:{1}'.format(
             type(object_value), object_value))
 
+    pass_property_on_missing_spec = swagger_spec.config.get(
+                                            'pass_property_on_missing_spec',
+                                            True)
     result = {}
     for k, v in iteritems(object_value):
         prop_spec = get_spec_for_prop(
             swagger_spec, object_spec, object_value, k)
         if prop_spec:
-            result[k] = unmarshal_schema_object(swagger_spec, prop_spec, v)
-        else:
+            try:
+                result[k] = unmarshal_schema_object(swagger_spec, prop_spec, v)
+            except schema.SwaggerReadOnly:
+                pass
+        elif pass_property_on_missing_spec:
             # Don't marshal when a spec is not available - just pass through
             result[k] = v
 
-    # re-introduce and None'ify any properties that weren't passed
-    properties = deref(object_spec).get('properties', {})
-    for prop_name, prop_spec in iteritems(properties):
-        if prop_name not in result:
-            result[prop_name] = None
+    expand_missing_properties = swagger_spec.config.get(
+                                    'expand_missing_properties',
+                                    True)
+    if expand_missing_properties:
+        # re-introduce and None'ify any properties that weren't passed
+        properties = deref(object_spec).get('properties', {})
+        for prop_name, prop_spec in iteritems(properties):
+            if prop_name not in result:
+                result[prop_name] = None
     return result
 
 

@@ -50,7 +50,19 @@ CONFIG_DEFAULTS = {
     # :class:`bravado_core.formatter.SwaggerFormat`. These formats are in
     # addition to the formats already supported by the Swagger 2.0
     # Specification.
-    'formats': []
+    'formats': [],
+
+    # Include readOnly properties in unmarshalled data
+    'include_read_only_properties': True,
+
+    # Unmarshaller will insert a property with value `None` if it is not
+    # provided in the input data
+    'expand_missing_properties': True,
+
+    # Unmarshaller blindly passes properties with a missing spec entry
+    # If set to False only properties defined in the spec are in the result of
+    # the unmarshaller
+    'pass_property_on_missing_spec': True,
 }
 
 
