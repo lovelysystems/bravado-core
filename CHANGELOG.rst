@@ -1,5 +1,7 @@
 Changelog
 =========
+
+- fix error in typecast if a boolean parameter has a default value
 - added spec config include_read_only_properties
 - added spec config expand_missing_properties
 - added spec config pass_property_on_missing_spec

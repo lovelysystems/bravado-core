@@ -198,6 +198,9 @@ def unmarshal_param(param, request):
 
 
 def string_to_boolean(value):
+    if isinstance(value, bool):
+        # this happens if a parameter has a default value
+        return value
     lowercase_value = value.lower()
     true = ['true', '1']
     false = ['false', '0']
