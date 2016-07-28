@@ -92,8 +92,8 @@ def get_spec_for_prop(swagger_spec, object_spec, object_value, prop_name):
     :rtype: dict
     """
     deref = swagger_spec.deref
-    props_spec = deref(object_spec).get('properties', {})
-    prop_spec = deref(props_spec).get(prop_name)
+
+    prop_spec = deref_allOf(swagger_spec, object_spec).get(prop_name)
 
     if prop_spec is not None:
         return deref(prop_spec)
@@ -113,3 +113,17 @@ def get_spec_for_prop(swagger_spec, object_spec, object_value, prop_name):
     raise SwaggerMappingError(
         "Don't know what to do with `additionalProperties` in spec {0} "
         "when inspecting value {1}".format(object_spec, object_value))
+
+
+def deref_allOf(swagger_spec, spec):
+    """Dereferencing 'allOf' to get all properties
+    """
+    result = {}
+    spec_deref = swagger_spec.deref(spec)
+    if 'properties' in spec_deref:
+        result.update(spec_deref['properties'])
+    elif 'allOf' in spec_deref:
+        # resolve allOf into
+        for c in spec_deref['allOf']:
+            result.update(deref_allOf(swagger_spec, c))
+    return result

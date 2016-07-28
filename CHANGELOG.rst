@@ -1,6 +1,7 @@
 Changelog
 =========
 
+- resolve 'allOf' when requesting a property for a spec
 - fix error in typecast if a boolean parameter has a default value
 - added spec config include_read_only_properties
 - added spec config expand_missing_properties
