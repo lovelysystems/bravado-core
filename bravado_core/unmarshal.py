@@ -109,6 +109,9 @@ def unmarshal_object(swagger_spec, object_spec, object_value):
     :raises: SwaggerMappingError
     """
     deref = swagger_spec.deref
+    properties = deref(object_spec).get('properties', {})
+    if not properties:
+        return object_value
 
     if not is_dict_like(object_value):
         raise SwaggerMappingError('Expected dict like type for {0}:{1}'.format(
@@ -135,7 +138,6 @@ def unmarshal_object(swagger_spec, object_spec, object_value):
                                     True)
     if expand_missing_properties:
         # re-introduce and None'ify any properties that weren't passed
-        properties = deref(object_spec).get('properties', {})
         for prop_name, prop_spec in iteritems(properties):
             if prop_name not in result:
                 result[prop_name] = None

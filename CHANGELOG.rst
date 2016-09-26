@@ -1,6 +1,7 @@
 Changelog
 =========
 
+- unmarshal object without properties as is
 - added nullable support
 - resolve 'allOf' when requesting a property for a spec
 - fix error in typecast if a boolean parameter has a default value
