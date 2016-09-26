@@ -1,6 +1,7 @@
 Changelog
 =========
 
+- always allow scheme file
 - unmarshal object without properties as is
 - added nullable support
 - resolve 'allOf' when requesting a property for a spec

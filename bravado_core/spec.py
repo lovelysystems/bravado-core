@@ -355,7 +355,10 @@ def build_api_serving_url(spec_dict, origin_url=None, preferred_scheme=None):
     origin = urlparse.urlparse(origin_url)
 
     def pick_a_scheme(schemes):
-        if not schemes:
+        # if the origin scheme if 'file' means that the picker is used to
+        # build the spec from files and must be allowed here otherwise it
+        # would not be possible to define schemes in the swagger spec.
+        if not schemes or origin.scheme == 'file':
             return origin.scheme
 
         if preferred_scheme:
