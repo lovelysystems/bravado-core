@@ -4,6 +4,7 @@ from six import iteritems
 from bravado_core import formatter, schema
 from bravado_core.exception import SwaggerMappingError
 from bravado_core.model import is_model, MODEL_MARKER
+from bravado_core.schema import deref_allOf
 from bravado_core.schema import get_spec_for_prop
 from bravado_core.schema import is_dict_like
 from bravado_core.schema import is_list_like
@@ -108,14 +109,15 @@ def unmarshal_object(swagger_spec, object_spec, object_value):
     :rtype: dict
     :raises: SwaggerMappingError
     """
-    deref = swagger_spec.deref
-    properties = deref(object_spec).get('properties', {})
-    if not properties:
-        return object_value
-
     if not is_dict_like(object_value):
         raise SwaggerMappingError('Expected dict like type for {0}:{1}'.format(
             type(object_value), object_value))
+
+    properties = deref_allOf(swagger_spec, object_spec)
+    if not properties:
+        # The spec provides no property definitions, we pass the value back
+        # as is.
+        return object_value
 
     pass_property_on_missing_spec = swagger_spec.config.get(
                                             'pass_property_on_missing_spec',
