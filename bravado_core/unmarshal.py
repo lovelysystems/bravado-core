@@ -32,7 +32,10 @@ def unmarshal_schema_object(swagger_spec, schema_object_spec, value):
 
     schema.raise_if_read_only(swagger_spec, schema_object_spec)
 
-    obj_type = schema_object_spec['type']
+    obj_type = schema_object_spec.get('type')
+
+    if obj_type is None:
+        return value
 
     if obj_type in SWAGGER_PRIMITIVES:
         return unmarshal_primitive(swagger_spec, schema_object_spec, value)
