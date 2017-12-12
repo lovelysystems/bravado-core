@@ -1,6 +1,7 @@
 Changelog
 =========
 
+- fix unmarshaller for nullable objects
 - unmarshal values without type definition as is
 - fix the unmarshaller to work with allOf
 - always allow scheme file
